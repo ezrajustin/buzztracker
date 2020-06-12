@@ -1,6 +1,9 @@
 # buzztracker
 Tracking the social-media buzz around your favorite TV shows!
 
+# Setup
+Set up 1 master node and 5 worker nodes for Spark. Set up 1 machine for Elasticsearch/Kibana.
+
 # Ingestion
 This directory stores the scripts used to import the original zipped files into s3.
 
