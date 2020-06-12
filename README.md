@@ -9,3 +9,6 @@ This directory stores the scripts used to import the original zipped files into 
 
 # Processing
 This directory stores scripts that process data in Spark and Elasticsearch. Also includes Google Apps Script that auto-triggers whenever key Google Sheet columns are updated by user.
+
+# Scheduling updates
+Airflow job configured here to run daily.
