@@ -10,7 +10,7 @@ This directory stores the scripts used to import the original zipped files into 
 # Processing
 This directory stores scripts that process data in Spark and Elasticsearch. Also includes Google Apps Script that auto-triggers whenever key Google Sheet columns are updated by user.
 
-# Scheduling updates
+# Airflow
 Airflow job configured here to run daily.
 Installing Airflow by following these instructions:
 https://medium.com/@abraham.pabbathi/airflow-on-aws-ec2-instance-with-ubuntu-aff8d3206171
