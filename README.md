@@ -12,3 +12,14 @@ This directory stores scripts that process data in Spark and Elasticsearch. Also
 
 # Scheduling updates
 Airflow job configured here to run daily.
+Installing Airflow by following these instructions:
+https://medium.com/@abraham.pabbathi/airflow-on-aws-ec2-instance-with-ubuntu-aff8d3206171
+
+### REMEMBER, if you can't access the web UI via <ec-ip-address>:8080, then you have to configure firewall (UFW)
+See more info on UFW here: https://linuxconfig.org/how-to-configure-firewall-in-ubuntu-18-04
+Run following commands in CLI:
+```
+sudo ufw status
+sudo ufw allow 8080
+sudo ufw allow 5432
+```
