@@ -18,13 +18,21 @@ def connect_to_es():
 		print("COULD NOT CONNECT TO ELASTICSEARCH!")
 	return es
 
-# create index in Elasticsearch for aggs
+# create index in Elasticsearch for aggs; notably, this setup has standard stopwords implemented
 def create_index(es_object, index_name):
 	created = False
 	settings = {
 		"settings": {
 			"number_of_shards": 1,
-			"number_of_replicas": 1
+			"number_of_replicas": 1,
+			"analysis":{
+				"analyzer":{
+					"my_analyzer":{
+						"type":"standard",
+						"stopwords":"_english_"
+					}
+				}
+			}
 		},
 		"mappings": {
 			"dynamic": "strict",
@@ -271,5 +279,3 @@ if __name__ == "__main__":
 					tweet_count = get_tweet_count(index_name, es_query)
 					agg_doc = create_agg_doc(show, season_num, launch_date, studio_or_network, mandatory_search_terms, optional_search_terms, j, tweet_count)
 					insert_agg_doc_into_index(agg_doc, index_name)
-
-
