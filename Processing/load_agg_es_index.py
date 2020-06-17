@@ -228,7 +228,7 @@ if __name__ == "__main__":
 	# indicate Google Sheets API (GS API)
 	scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
 	# collect credentials to access GS API
-	creds = ServiceAccountCredentials.from_json_keyfile_name('BuzzTracker-fe105c17a282.json', scope)
+	creds = ServiceAccountCredentials.from_json_keyfile_name('/home/ubuntu/BuzzTracker-fe105c17a282.json', scope)
 	# create client authorizing those creds
 	client = gspread.authorize(creds)
 	# open spreadsheet
