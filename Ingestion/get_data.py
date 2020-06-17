@@ -89,18 +89,6 @@ def moveFilesToS3(start, end, delta):
 
 		print("==========COMPLETED MIGRATION OF FILES FOR " + datefilepath + "==========")
 
-'''
-NOT SURE IF I NEED THIS LAST FUNCTION ANY MORE.
-# Run this function to generate list of filenames in date range and add to "files.txt"
-def getCustomDateRange(start, end, delta):
-	output_file = "files.txt"
-	with open(output_file, 'w') as csv_file:
-		csv_writer = csv.writer(csv_file, delimiter=',')
-		for k in range(delta.days + 1):
-			day = start + timedelta(days=k)
-			line = "twitter-{year}-{month:02d}-{day:02d}.tar".format(year=day.year, month=day.month, day=day.day)
-			csv_writer.writerow([line])
-'''
 
 if __name__ == "__main__":
 	downloadTarFilesForCustomDateRange(start,end,delta)
