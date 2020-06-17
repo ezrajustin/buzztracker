@@ -2,7 +2,7 @@
 Tracking the social-media buzz around your favorite TV shows!
 
 
-# OVERVIEW
+# Overview
 
 Over-the-top (OTT) streaming platforms like Hulu, Amazon Prime, and Netflix collect their own data on how watched their TV shows are. But if they also had access to information about how talked-about (or "buzzy") their TV shows are, it would guide short-term business decisions (e.g. investing social media marketing dollars in buzzy TV shows will likely have more virality, word-of-mouth spread, and ROI) and long-term business decisions (e.g. deciding what type of content to produce in the future, identifying culturally influential content that could contend for prestigious awards like Emmys or Academy Awards, improve brand recognition/equity).
 
@@ -10,7 +10,7 @@ BuzzTracker is a data platform that takes custom inputs specifying TV shows and 
 
 
 # Setup
-## Spark Setup
+### Spark Setup
 To set up the Spark (PySpark v. 2.4.5) cluster, I follow instructions found [here](https://blog.insightdatascience.com/simply-install-spark-cluster-mode-341843a52b88).
 
 Notably, I set up 1 master node and 5 worker nodes on AWS--all of m5.large EC2 instance type (on each machine: 18.04 Ubuntu, 2 vCPUs, 8GiB).
@@ -19,10 +19,10 @@ Alternatively, you can run the following Bash scripts found in the `Setup` folde
 `spark_setup_master_node.sh`
 `spark_setup_worker_node.sh`
 
-## Elasticsearch Setup
+### Elasticsearch Setup
 Provision a separate m4.xlarge EC2 instance in AWS (18.04 Ubuntu, 4 vCPUs, 16 GiB). To set up Elasticsearch on that machine, follow instructions [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-18-04). (remember to select "Ubuntu 18.04" in the dropdown for version)
 
-## Kibana Setup
+### Kibana Setup
 On the same m4.xlarge EC2 where you've installed Elasticsearch, install Kibana (the data visualization tool that naturally pairs with Elasticsearch) by following instructions in the "Installing Kibana on AWS" section of [this tutorial](https://logz.io/blog/install-elk-stack-amazon-aws/).
 
 
@@ -37,7 +37,7 @@ In the `Ingestion` folder, you'll find the `get_data.py` script, which we want t
 
 Note: If you are unsure of how to create an S3 bucket, you can find step-by-step instructions [here](https://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html).
 
-## JSON to Spark to ES
+### JSON to Spark to ES
 First, install the following packages in your master Spark node:
 `sudo wget https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/2.7.7/hadoop-aws-2.7.7.jar`
 `sudo wget https://repo1.maven.org/maven2/net/java/dev/jets3t/jets3t/0.9.4/jets3t-0.9.4.jar`
@@ -55,16 +55,16 @@ In the `Ingestion` folder, you'll also find the `json_to_spark_to_es.py` script,
 # Processing
 This directory stores scripts that process data in Spark and Elasticsearch. Also includes Google Apps Script that auto-triggers whenever key Google Sheet columns are updated by user.
 
-## Set up Google Sheets API
+### Set up Google Sheets API
 To install and set up Google Sheets API, follow instructions [here](https://developers.google.com/sheets/api/quickstart/python).
 For more comprehensive instructions, you can also reference [this](https://towardsdatascience.com/accessing-google-spreadsheet-data-using-python-90a5bc214fd2).
 
 `onedit_google_sheets_trigger.gs` is the Google Apps script which I added to my Google Sheet so that it auto-populates a field whenever certain columns in the sheet are updated.
 
-## Preprocessing in Spark
+### Preprocessing in Spark
 `load_agg_es_index.py` queries the preprocessed data (which now already resides in ES) to load a new index called with aggregated stats (i.e. pre-rolled aggs). Notably, the grain of this agg index is `TV Show` / `Season Number` / `Days Since Launch` . Note: ES's equivalent of "tables" in RDBMS is called an "index".
 
-## Working with Elasticsearch/Kibana
+### Working with Elasticsearch/Kibana
 Once these pre-rolled agg data are in our new ES index, we can access that data via Kibana to create charts and dashboards. Typically, you can access Kibana by going to `<ec2_instance_ip_address>:5601` in a web browser. In my case, Kibana was having issues planting itself on port 5601 of the EC2 machine, so I updated the Kibana config file so that Kibana used port 5602 instead, in which case I could access Kibana by going to `<ec2_instance_ip_address>:5602`.
 
 
@@ -72,7 +72,7 @@ Once these pre-rolled agg data are in our new ES index, we can access that data 
 Airflow job configured here to run daily.
 Installing Airflow by following [these instructions](https://medium.com/@abraham.pabbathi/airflow-on-aws-ec2-instance-with-ubuntu-aff8d3206171).
 
-## REMEMBER, if you can't access the Airflow web UI via `<ec-ip-address>:8080`, then you have to configure firewall (UFW)
+### REMEMBER, if you can't access the Airflow web UI via `<ec-ip-address>:8080`, then you have to configure firewall (UFW)
 See more info on UFW [here](https://linuxconfig.org/how-to-configure-firewall-in-ubuntu-18-04).
 Run following commands in CLI:
 ```
