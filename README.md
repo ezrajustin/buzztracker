@@ -6,7 +6,9 @@ Tracking the social-media buzz around your favorite TV shows!
 
 Over-the-top (OTT) streaming platforms like Hulu, Amazon Prime, and Netflix collect their own data on how watched their TV shows are. But if they also had access to information about how talked-about (or "buzzy") their TV shows are, it would guide short-term business decisions (e.g. investing social media marketing dollars in buzzy TV shows will likely have more virality, word-of-mouth spread, and ROI) and long-term business decisions (e.g. deciding what type of content to produce in the future, identifying culturally influential content that could contend for prestigious awards like Emmys or Academy Awards, improve brand recognition/equity).
 
-BuzzTracker is a data platform that takes custom inputs specifying TV shows and associated search terms from business users (via Google Sheets), calculates Twitter volumes matching those search terms (using Spark for preprocessing at scale and Elasticsearch for string matching at scale), and visualizes those Twitter volumes in Kibana for appropriate date windows (i.e. one week before TV show launch date to four weeks after TV show launch date). The platform then leverages Airflow to regularly recalculate Twitter volumes whenever user-input search terms have been updated. The inputs (i.e. both TV shows and/or search terms of interest) can continually be updated, and the platform will dynamically handle and re-produce results, which makes it a useful tool for ongoing tracking and analysis as opposed to simply a one-time ad hoc analysis.
+BuzzTracker is a data platform that takes custom inputs specifying TV shows and associated search terms from business users (via Google Sheets), calculates Twitter volumes matching those search terms (using Spark for preprocessing at scale and Elasticsearch for string matching at scale), and visualizes those Twitter volumes in Kibana for appropriate date windows (i.e. one week before TV show launch date to four weeks after TV show launch date). The platform then leverages Airflow to regularly recalculate Twitter volumes whenever user-input search terms have been updated. The inputs (i.e. both TV shows and/or search terms of interest) can continually be updated, and the platform will dynamically handle and re-produce results, which makes it a useful tool for ongoing tracking and analysis as opposed to simply a one-time ad hoc analysis. 
+
+Note: BuzzTracker uses, processes, and aggregates ~3TB of raw Twitter archive data for the period July 2018 to July 2019. 
 
 
 # Setup
@@ -43,7 +45,10 @@ First, install the following packages in your master Spark node:
 `sudo wget https://repo1.maven.org/maven2/net/java/dev/jets3t/jets3t/0.9.4/jets3t-0.9.4.jar`
 `sudo wget https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk/1.11.30/aws-java-sdk-1.11.30.jar`
 
+
 At this point, we have a huge repo of Twitter JSON data (i.e., 3TB+ for one year's worth of Twitter data from July 2018 to July 2019!) sitting in our S3 bucket, but we want to preprocess it in Spark before loading it into Elasticsearch (ES) so that we don't overload ES and so that we can enable ES to run more quickly. We will use ES as our database and search/querying engine. ES is a great tool for this use case because ES is designed to do all sorts of string/textual analyses at scale--and very quickly!
+
+Note: The raw Twitter archive data includes over 200 possible fields! But we only need a few of these fields for our purposes. 
 
 In the `Ingestion` folder, you'll also find the `json_to_spark_to_es.py` script, which we want to run for a specified date range of interest  (see file itself for more specifics on how to execute with specific arguments/flags in CLI). This script does a few things for each day of your specified date range:
 * Reads Twitter JSON files to Spark DataFrame
@@ -51,6 +56,16 @@ In the `Ingestion` folder, you'll also find the `json_to_spark_to_es.py` script,
 * Stores preprocessed DataFrame in S3 (in case we ever need to re-access it, in which case we can access it without having to re-process all the original raw data via Spark)
 * Write the DataFrame to Elasticsearch index called `twitter`, which I created separately prior to running this script
 
+The schema of the data written to ES:
+```
+tweet_date        (date),
+user_id           (bigint),
+user_screen_name 	(string),
+text              (string),
+lang              (string),
+retweet_count     (int),
+favorite_count    (int)
+```
 
 # Processing
 This directory stores scripts that process data in Spark and Elasticsearch. Also includes Google Apps Script that auto-triggers whenever key Google Sheet columns are updated by user.
