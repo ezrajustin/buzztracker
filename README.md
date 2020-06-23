@@ -60,7 +60,7 @@ The schema of the data written to ES:
 ```
 tweet_date        (date),
 user_id           (bigint),
-user_screen_name 	(string),
+user_screen_name  (string),
 text              (string),
 lang              (string),
 retweet_count     (int),
